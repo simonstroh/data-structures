@@ -13,12 +13,11 @@ Graph.prototype.addNode = function(node) {
   this.storage.push(newNode)
 };
 
-// Helper function for contains
+// Helper Functions -----------------------------
 var filterNodesByValue = function(array, value) {
   return array.filter(node => node.value === value)
 }
 
-// Helper function for addEdge
 var findIndexOfNodeOfValue = function(array, value) {
   for (let i = 0; i < array.length; i++) {
     if (array[i].value === value) {
@@ -27,6 +26,17 @@ var findIndexOfNodeOfValue = function(array, value) {
   }
   return false;
 }
+
+var removeReferencesToNode = function(nodeBeingDeleted, edge) {
+  let edges = edge.edges;
+  for (let i = 0; i < edges.length; i++) {
+    if (edges[i] === nodeBeingDeleted) {
+      edges.splice(i, 1);
+    }
+  }
+}
+// ----------------------------------------------
+
 
 // Return a boolean value indicating if the value passed to contains is represented in the graph.
 Graph.prototype.contains = function(node) {
@@ -39,9 +49,13 @@ Graph.prototype.contains = function(node) {
 };
 
 // Removes a node from the graph.
-Graph.prototype.removeNode = function(node) {
+Graph.prototype.removeNode = function(target) {
   for (let i = 0; i < this.storage.length; i++) {
-    if (this.storage[i].value === node) {
+    let node = this.storage[i];
+    if (node.value === target) {
+      node.edges.forEach(edge => {
+        removeReferencesToNode(node, edge)
+      })
       this.storage.splice(i, 1);
     }
   }
@@ -73,14 +87,20 @@ Graph.prototype.removeEdge = function(fromNodeValue, toNodeValue) {
   var fromNodeIndex = findIndexOfNodeOfValue(storage, fromNodeValue);
   var fromNodeEdges = storage[fromNodeIndex].edges;
   var toNodeIndexInFromNodeEdges = findIndexOfNodeOfValue(fromNodeEdges, toNodeValue);
-  var toNode = fromNodeEdges[toNodeIndexInFromNodeEdges];
-  fromNodeEdges.splice(toNodeIndexInFromNodeEdges, 1);
-  var fromNodeIndexInToNodeEdges = findIndexOfNodeOfValue(toNode.edges, fromNodeValue);
-  toNode.edges.splice(fromNodeIndexInToNodeEdges, 1);
+  // var toNodeIndex = findIndexOfNodeOfValue(storage, toNodeValue)
+  var toNodeEdges = fromNodeEdges[toNodeIndexInFromNodeEdges].edges;
+  var fromNodeIndexInToNodeEdges = findIndexOfNodeOfValue(toNodeEdges, fromNodeValue)
+  removeReferencesToNode(storage[fromNodeIndex], fromNodeEdges[toNodeIndexInFromNodeEdges])
+  if (toNodeEdges.length > 0) {
+    removeReferencesToNode(fromNodeEdges[toNodeIndexInFromNodeEdges], toNodeEdges[fromNodeIndexInToNodeEdges])
+  }
 };
 
 // Pass in a callback which will be executed on each node of the graph.
 Graph.prototype.forEachNode = function(cb) {
+  _.each(this.storage, function(node){
+    cb(node.value);
+  })
 };
 
 /*
