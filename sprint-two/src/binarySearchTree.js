@@ -26,24 +26,31 @@ BinarySearchTree.prototype.insert = function(value) {
 
 BinarySearchTree.prototype.contains = function(target) {
   let result = false;
-  let inner = function(){
-    if (target === this.value) {
-      result = true
-    } else {
-      if (this.left.value) {
-        return this.left.contains(target);
+  let inner = function(tree){
+    if (target === tree.value) {
+      result = true;
+    } else if (target > tree.value) {
+      if (tree.right.value) {
+        inner(tree.right)
       }
-      if (this.right.value) {
-        return this.right.contains(target);
+    } else if (target < tree.value) {
+      if (tree.left.value) {
+        inner(tree.left)
       }
-    } 
+    }
   }
-
+  inner(this)
   return result;
 }
 
 BinarySearchTree.prototype.depthFirstLog = function(cb) {
-
+  cb(this.value);
+  if (this.left.value) {
+    this.left.depthFirstLog(cb);
+  }
+  if (this.right.value) {
+    this.right.depthFirstLog(cb);
+  }
 }
 
 /*
