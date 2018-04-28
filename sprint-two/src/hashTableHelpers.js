@@ -10,7 +10,6 @@
 // Usage:
 //   limitedArray.set(3, 'hi');
 //   limitedArray.get(3); // returns 'hi'
-
 var LimitedArray = function(limit) {
   var storage = [];
 
@@ -21,8 +20,22 @@ var LimitedArray = function(limit) {
   };
   limitedArray.set = function(index, value) {
     checkLimit(index);
-    storage[index] = value;
+    // if bucket doesn't exist, create it, and stick key/value in
+    if (storage[index] === undefined) {
+      storage[index] = [value];
+    } else {
+      // check bucket to see if key already exists in bucket
+      let preexistingKeyIndex = findIndex(storage[index], function(tuple) {
+        return tuple[0] === value[0];
+      })
+      if (preexistingKeyIndex === -1) {
+        storage[index].push(value);
+      } else {
+        storage[index][preexistingKeyIndex] = value;
+      }
+    }
   };
+  
   limitedArray.each = function(callback) {
     for (var i = 0; i < storage.length; i++) {
       callback(storage[i], i, storage);
@@ -40,6 +53,7 @@ var LimitedArray = function(limit) {
 
   return limitedArray;
 };
+
 
 // This is a "hashing function". You don't need to worry about it, just use it
 // to turn any string into an integer that is well-distributed between the
