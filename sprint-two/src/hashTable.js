@@ -18,7 +18,6 @@ HashTable.prototype.retrieve = function(k) {
 HashTable.prototype.remove = function(k) {
   let index = getIndexBelowMaxForKey(k, this._limit);
   let bucket = this._storage.get(index);
-  console.log(bucket)
   let bucketIndex = findIndex(bucket, function(item) {
     return item[0] === k;
   })
