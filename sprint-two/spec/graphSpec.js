@@ -68,4 +68,18 @@ describe('graph', function() {
     expect(graph.hasEdge(3, 5)).to.equal(true);
     expect(graph.hasEdge(5, 5)).to.equal(true);
   });
+
+  it('should remove all edges between each node in the graph', function() {
+    graph.addNode(1);
+    graph.addNode(2);
+    graph.addNode(3);
+    graph.addNode(4);
+    graph.addNode(5);
+    graph.addEdge(2, 5);
+    graph.addEdge(4, 5);
+    graph.removeEdge(2, 5);
+    console.log(graph.storage[1]);
+    expect(graph.hasEdge(2, 5)).to.equal(false);
+  });
+
 });

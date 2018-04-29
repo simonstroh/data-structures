@@ -51,5 +51,12 @@ describe('linkedList', function() {
     expect(linkedList.contains(4)).to.equal(false);
   });
 
+  it('should do a look up on the head and on the tail', function() {
+    linkedList.addToTail(9000);
+    linkedList.addToTail(9001);
+    expect(linkedList.contains(9000)).to.equal(true);
+    expect(linkedList.contains(9001)).to.equal(true);
+  });
+
   // add more tests here to test the functionality of linkedList
 });

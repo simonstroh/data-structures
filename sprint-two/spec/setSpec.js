@@ -24,4 +24,18 @@ describe('set', function() {
     expect(set.contains('Mel Gibson')).to.equal(false);
   });
 
+  it('should return an object containing a storage property', function() {
+    function hasArray(obj) {
+      var result = false
+      for (let property in obj) {
+        if (Array.isArray(obj[property])) {
+          result = true
+        }
+      }
+      return result
+    }
+    expect(typeof set).to.equal("object");
+    expect(hasArray(set)).to.equal(true);
+  });
+
 });

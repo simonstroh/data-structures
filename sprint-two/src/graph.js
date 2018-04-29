@@ -27,11 +27,10 @@ var findIndexOfNodeOfValue = function(array, value) {
   return false;
 }
 
-var removeReferencesToNode = function(nodeBeingDeleted, edge) {
-  let edges = edge.edges;
-  for (let i = 0; i < edges.length; i++) {
-    if (edges[i] === nodeBeingDeleted) {
-      edges.splice(i, 1);
+var removeNodeFromArray = function(node, array) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === node) {
+      array.splice(i, 1);
     }
   }
 }
@@ -54,7 +53,7 @@ Graph.prototype.removeNode = function(target) {
     let node = this.storage[i];
     if (node.value === target) {
       node.edges.forEach(edge => {
-        removeReferencesToNode(node, edge)
+        removeNodeFromArray(node, edge.edges)
       })
       this.storage.splice(i, 1);
     }
@@ -83,17 +82,16 @@ Graph.prototype.addEdge = function(fromNode, toNode) {
 
 // Remove an edge between any two specified (by value) nodes.
 Graph.prototype.removeEdge = function(fromNodeValue, toNodeValue) {
-  var storage = this.storage;
-  var fromNodeIndex = findIndexOfNodeOfValue(storage, fromNodeValue);
-  var fromNodeEdges = storage[fromNodeIndex].edges;
-  var toNodeIndexInFromNodeEdges = findIndexOfNodeOfValue(fromNodeEdges, toNodeValue);
-  // var toNodeIndex = findIndexOfNodeOfValue(storage, toNodeValue)
-  var toNodeEdges = fromNodeEdges[toNodeIndexInFromNodeEdges].edges;
-  var fromNodeIndexInToNodeEdges = findIndexOfNodeOfValue(toNodeEdges, fromNodeValue)
-  removeReferencesToNode(storage[fromNodeIndex], fromNodeEdges[toNodeIndexInFromNodeEdges])
-  if (toNodeEdges.length > 0) {
-    removeReferencesToNode(fromNodeEdges[toNodeIndexInFromNodeEdges], toNodeEdges[fromNodeIndexInToNodeEdges])
-  }
+  const storage = this.storage;
+
+  const fromNode = storage[findIndexOfNodeOfValue(storage, fromNodeValue)];
+  const fromNodeEdges = fromNode.edges;
+
+  const toNode = fromNodeEdges[findIndexOfNodeOfValue(fromNodeEdges, toNodeValue)];
+  const toNodeEdges = toNode.edges;
+
+  removeNodeFromArray(fromNode, toNodeEdges);
+  removeNodeFromArray(toNode, fromNodeEdges);
 };
 
 // Pass in a callback which will be executed on each node of the graph.

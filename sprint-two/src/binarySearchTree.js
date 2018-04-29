@@ -3,7 +3,6 @@ const BinarySearchTree = function(value) {
   node.value = value;
   node.left = {};
   node.right = {};
-  console.log(node)
   return node;
 };
 
@@ -14,7 +13,6 @@ BinarySearchTree.prototype.insert = function(value) {
     } else {
       this.right = BinarySearchTree(value);
     }
-    
   } else if (value < this.value) {
     if (this.left.value) {
       this.left.insert(value);
