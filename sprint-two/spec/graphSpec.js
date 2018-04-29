@@ -78,7 +78,6 @@ describe('graph', function() {
     graph.addEdge(2, 5);
     graph.addEdge(4, 5);
     graph.removeEdge(2, 5);
-    console.log(graph.storage[1]);
     expect(graph.hasEdge(2, 5)).to.equal(false);
   });
 
